@@ -40,9 +40,14 @@ export default function Navbar() {
               Series
             </Link>
             {isAuthenticated && (
-              <Link href="/my-list" className="text-zinc-300 hover:text-white transition-colors">
-                Mi Lista
-              </Link>
+              <>
+                <Link href="/my-list" className="text-zinc-300 hover:text-white transition-colors">
+                  Mi Lista
+                </Link>
+                <Link href="/stats" className="text-zinc-300 hover:text-white transition-colors">
+                  Estadísticas
+                </Link>
+              </>
             )}
           </div>
 
@@ -168,6 +173,9 @@ export default function Navbar() {
                 <>
                   <Link href="/my-list" className="px-4 py-2 text-zinc-300 hover:text-white">
                     Mi Lista
+                  </Link>
+                  <Link href="/stats" className="px-4 py-2 text-zinc-300 hover:text-white">
+                    Estadísticas
                   </Link>
                   <Link href="/profile" className="px-4 py-2 text-zinc-300 hover:text-white">
                     Perfil

@@ -152,6 +152,68 @@ namespace MovieApi.DTOs
         public int TotalEpisodiosVistos { get; set; }
     }
 
+    public class EstadisticasDetalladasResponse
+    {
+        // Resumen general
+        public int TotalContenidosVistos { get; set; }
+        public int TotalPeliculas { get; set; }
+        public int TotalSeries { get; set; }
+        public decimal? PromedioCalificacion { get; set; }
+        public int TotalResenas { get; set; }
+        public int TotalEpisodiosVistos { get; set; }
+        public int TotalCalificaciones { get; set; }
+
+        // Distribución de calificaciones (1-10)
+        public List<CalificacionDistribucion> DistribucionCalificaciones { get; set; } = new();
+
+        // Actividad mensual (últimos 12 meses)
+        public List<ActividadMensual> ActividadMensual { get; set; } = new();
+
+        // Contenidos recientes
+        public List<ContenidoReciente> ContenidosRecientes { get; set; } = new();
+
+        // Mejores calificados por el usuario
+        public List<ContenidoCalificado> MejoresCalificados { get; set; } = new();
+
+        // Tiempo estimado viendo contenido
+        public int MinutosTotalesEstimados { get; set; }
+        public int HorasTotalesEstimadas { get; set; }
+        public int DiasTotalesEstimados { get; set; }
+    }
+
+    public class CalificacionDistribucion
+    {
+        public int Puntuacion { get; set; }
+        public int Cantidad { get; set; }
+    }
+
+    public class ActividadMensual
+    {
+        public string Mes { get; set; } = string.Empty;
+        public int Anio { get; set; }
+        public int Peliculas { get; set; }
+        public int Series { get; set; }
+        public int Total { get; set; }
+    }
+
+    public class ContenidoReciente
+    {
+        public int ContenidoId { get; set; }
+        public string? Titulo { get; set; }
+        public string TipoContenido { get; set; } = string.Empty;
+        public DateTime FechaVisualizacion { get; set; }
+        public decimal? Puntuacion { get; set; }
+    }
+
+    public class ContenidoCalificado
+    {
+        public int ContenidoId { get; set; }
+        public string? Titulo { get; set; }
+        public string TipoContenido { get; set; } = string.Empty;
+        public decimal Puntuacion { get; set; }
+        public DateTime FechaCalificacion { get; set; }
+    }
+
     // ========== API Response Wrapper ==========
     public class ApiResponse<T>
     {

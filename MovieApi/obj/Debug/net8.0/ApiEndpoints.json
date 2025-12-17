@@ -1182,6 +1182,26 @@
     ]
   },
   {
+    "ContainingType": "MovieApi.Controllers.VisualizacionesController",
+    "Method": "ObtenerEstadisticasDetalladas",
+    "RelativePath": "api/Visualizaciones/estadisticas/detalladas",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "MovieApi.DTOs.ApiResponse\u00601[[MovieApi.DTOs.EstadisticasDetalladasResponse, MovieApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Program\u002B\u003C\u003Ec",
     "Method": "\u003C\u003CMain\u003E$\u003Eb__0_7",
     "RelativePath": "health",

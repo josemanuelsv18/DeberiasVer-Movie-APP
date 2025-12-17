@@ -307,6 +307,52 @@ export interface EstadisticasUsuarioResponse {
   totalEpisodiosVistos: number;
 }
 
+export interface EstadisticasDetalladasResponse {
+  totalContenidosVistos: number;
+  totalPeliculas: number;
+  totalSeries: number;
+  promedioCalificacion: number | null;
+  totalResenas: number;
+  totalEpisodiosVistos: number;
+  totalCalificaciones: number;
+  distribucionCalificaciones: CalificacionDistribucion[];
+  actividadMensual: ActividadMensual[];
+  contenidosRecientes: ContenidoReciente[];
+  mejoresCalificados: ContenidoCalificado[];
+  minutosTotalesEstimados: number;
+  horasTotalesEstimadas: number;
+  diasTotalesEstimados: number;
+}
+
+export interface CalificacionDistribucion {
+  puntuacion: number;
+  cantidad: number;
+}
+
+export interface ActividadMensual {
+  mes: string;
+  anio: number;
+  peliculas: number;
+  series: number;
+  total: number;
+}
+
+export interface ContenidoReciente {
+  contenidoId: number;
+  titulo: string | null;
+  tipoContenido: string;
+  fechaVisualizacion: string;
+  puntuacion: number | null;
+}
+
+export interface ContenidoCalificado {
+  contenidoId: number;
+  titulo: string | null;
+  tipoContenido: string;
+  puntuacion: number;
+  fechaCalificacion: string;
+}
+
 export interface PromedioCalificacion {
   contenidoId: number;
   promedio: number | null;

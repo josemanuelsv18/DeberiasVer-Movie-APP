@@ -1944,10 +1944,65 @@
           }
         }
       }
+    },
+    "/api/Visualizaciones/estadisticas/detalladas": {
+      "get": {
+        "tags": [
+          "Visualizaciones"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadisticasDetalladasResponseApiResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadisticasDetalladasResponseApiResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstadisticasDetalladasResponseApiResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "ActividadMensual": {
+        "type": "object",
+        "properties": {
+          "mes": {
+            "type": "string",
+            "nullable": true
+          },
+          "anio": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "peliculas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "series": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
       "AuthResponse": {
         "type": "object",
         "properties": {
@@ -1980,6 +2035,20 @@
           },
           "data": {
             "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "CalificacionDistribucion": {
+        "type": "object",
+        "properties": {
+          "puntuacion": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cantidad": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -2034,6 +2103,59 @@
             "minimum": 1,
             "type": "number",
             "format": "double"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContenidoCalificado": {
+        "type": "object",
+        "properties": {
+          "contenidoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoContenido": {
+            "type": "string",
+            "nullable": true
+          },
+          "puntuacion": {
+            "type": "number",
+            "format": "double"
+          },
+          "fechaCalificacion": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContenidoReciente": {
+        "type": "object",
+        "properties": {
+          "contenidoId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "titulo": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoContenido": {
+            "type": "string",
+            "nullable": true
+          },
+          "fechaVisualizacion": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "puntuacion": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -2115,6 +2237,97 @@
           "episodioId": {
             "type": "integer",
             "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EstadisticasDetalladasResponse": {
+        "type": "object",
+        "properties": {
+          "totalContenidosVistos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPeliculas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalSeries": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "promedioCalificacion": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalResenas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalEpisodiosVistos": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCalificaciones": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "distribucionCalificaciones": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CalificacionDistribucion"
+            },
+            "nullable": true
+          },
+          "actividadMensual": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActividadMensual"
+            },
+            "nullable": true
+          },
+          "contenidosRecientes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContenidoReciente"
+            },
+            "nullable": true
+          },
+          "mejoresCalificados": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContenidoCalificado"
+            },
+            "nullable": true
+          },
+          "minutosTotalesEstimados": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "horasTotalesEstimadas": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "diasTotalesEstimados": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "EstadisticasDetalladasResponseApiResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/EstadisticasDetalladasResponse"
           }
         },
         "additionalProperties": false

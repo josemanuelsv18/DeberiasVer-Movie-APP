@@ -21,6 +21,7 @@ import {
   EpisodioVistoInfo,
   EpisodioVistoRequest,
   EstadisticasUsuarioResponse,
+  EstadisticasDetalladasResponse,
   PromedioCalificacion,
   UserInfo,
 } from './types';
@@ -213,6 +214,10 @@ export const visualizacionesApi = {
 
   getEstadisticas: async (): Promise<ApiResponse<EstadisticasUsuarioResponse>> => {
     return fetchApi<ApiResponse<EstadisticasUsuarioResponse>>('/api/visualizaciones/estadisticas');
+  },
+
+  getEstadisticasDetalladas: async (): Promise<ApiResponse<EstadisticasDetalladasResponse>> => {
+    return fetchApi<ApiResponse<EstadisticasDetalladasResponse>>('/api/visualizaciones/estadisticas/detalladas');
   },
 };
 

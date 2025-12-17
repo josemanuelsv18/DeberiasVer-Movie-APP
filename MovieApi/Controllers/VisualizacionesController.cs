@@ -276,5 +276,137 @@ namespace MovieApi.Controllers
 
             return Ok(ApiResponse<EstadisticasUsuarioResponse>.Ok(estadisticas, "Estadísticas obtenidas"));
         }
+
+        /// <summary>
+        /// Obtiene estadísticas detalladas del usuario para reportes gráficos
+        /// </summary>
+        [HttpGet("estadisticas/detalladas")]
+        [ProducesResponseType(typeof(ApiResponse<EstadisticasDetalladasResponse>), 200)]
+        public async Task<IActionResult> ObtenerEstadisticasDetalladas()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0) return Unauthorized();
+
+            var visualizaciones = await _context.Visualizaciones
+                .Include(v => v.Calificacion)
+                .Include(v => v.Contenido)
+                .Include(v => v.TipoContenido)
+                .Where(v => v.UsuarioId == userId)
+                .ToListAsync();
+
+            var episodiosCount = await _context.EpisodiosVistos
+                .CountAsync(e => _context.Visualizaciones
+                    .Any(v => v.VisualizacionId == e.VisualizacionId && v.UsuarioId == userId));
+
+            var resenasCount = await _context.Resenas
+                .CountAsync(r => _context.Visualizaciones
+                    .Any(v => v.VisualizacionId == r.VisualizacionId && v.UsuarioId == userId));
+
+            var calificaciones = visualizaciones
+                .Where(v => v.Calificacion != null)
+                .Select(v => v.Calificacion!.Puntuacion)
+                .ToList();
+
+            // Distribución de calificaciones (1-10)
+            var distribucionCalificaciones = Enumerable.Range(1, 10)
+                .Select(puntuacion => new CalificacionDistribucion
+                {
+                    Puntuacion = puntuacion,
+                    Cantidad = visualizaciones.Count(v => v.Calificacion != null && Math.Floor(v.Calificacion.Puntuacion) == puntuacion)
+                })
+                .ToList();
+
+            // Actividad mensual (últimos 12 meses)
+            var hace12Meses = DateTime.Now.AddMonths(-11);
+            var actividadMensual = visualizaciones
+                .Where(v => v.FechaVisualizacion >= new DateTime(hace12Meses.Year, hace12Meses.Month, 1))
+                .GroupBy(v => new { v.FechaVisualizacion.Year, v.FechaVisualizacion.Month })
+                .Select(g => new ActividadMensual
+                {
+                    Mes = new DateTime(g.Key.Year, g.Key.Month, 1).ToString("MMM", new System.Globalization.CultureInfo("es-ES")),
+                    Anio = g.Key.Year,
+                    Peliculas = g.Count(v => v.TipoId == 1),
+                    Series = g.Count(v => v.TipoId == 2),
+                    Total = g.Count()
+                })
+                .OrderBy(a => a.Anio)
+                .ThenBy(a => DateTime.ParseExact(a.Mes, "MMM", new System.Globalization.CultureInfo("es-ES")).Month)
+                .ToList();
+
+            // Rellenar meses faltantes
+            var mesesCompletos = new List<ActividadMensual>();
+            for (int i = 0; i < 12; i++)
+            {
+                var fecha = hace12Meses.AddMonths(i);
+                var existente = actividadMensual.FirstOrDefault(a => 
+                    a.Anio == fecha.Year && 
+                    a.Mes.Equals(fecha.ToString("MMM", new System.Globalization.CultureInfo("es-ES")), StringComparison.OrdinalIgnoreCase));
+                
+                mesesCompletos.Add(existente ?? new ActividadMensual
+                {
+                    Mes = fecha.ToString("MMM", new System.Globalization.CultureInfo("es-ES")),
+                    Anio = fecha.Year,
+                    Peliculas = 0,
+                    Series = 0,
+                    Total = 0
+                });
+            }
+
+            // Contenidos recientes (últimos 10)
+            var contenidosRecientes = visualizaciones
+                .OrderByDescending(v => v.FechaVisualizacion)
+                .Take(10)
+                .Select(v => new ContenidoReciente
+                {
+                    ContenidoId = v.ContenidoId,
+                    Titulo = v.Contenido?.ContenidoTitulo,
+                    TipoContenido = v.TipoContenido?.TipoNombre ?? (v.TipoId == 1 ? "Película" : "Serie"),
+                    FechaVisualizacion = v.FechaVisualizacion,
+                    Puntuacion = v.Calificacion?.Puntuacion
+                })
+                .ToList();
+
+            // Mejores calificados (Top 10)
+            var mejoresCalificados = visualizaciones
+                .Where(v => v.Calificacion != null)
+                .OrderByDescending(v => v.Calificacion!.Puntuacion)
+                .ThenByDescending(v => v.Calificacion!.FechaCalificacion)
+                .Take(10)
+                .Select(v => new ContenidoCalificado
+                {
+                    ContenidoId = v.ContenidoId,
+                    Titulo = v.Contenido?.ContenidoTitulo,
+                    TipoContenido = v.TipoContenido?.TipoNombre ?? (v.TipoId == 1 ? "Película" : "Serie"),
+                    Puntuacion = v.Calificacion!.Puntuacion,
+                    FechaCalificacion = v.Calificacion.FechaCalificacion
+                })
+                .ToList();
+
+            // Estimación de tiempo (películas ~120 min, episodios ~45 min)
+            var peliculas = visualizaciones.Count(v => v.TipoId == 1);
+            var minutosPeliculas = peliculas * 120;
+            var minutosEpisodios = episodiosCount * 45;
+            var minutosTotales = minutosPeliculas + minutosEpisodios;
+
+            var estadisticas = new EstadisticasDetalladasResponse
+            {
+                TotalContenidosVistos = visualizaciones.Count,
+                TotalPeliculas = peliculas,
+                TotalSeries = visualizaciones.Count(v => v.TipoId == 2),
+                PromedioCalificacion = calificaciones.Any() ? Math.Round(calificaciones.Average(), 1) : null,
+                TotalResenas = resenasCount,
+                TotalEpisodiosVistos = episodiosCount,
+                TotalCalificaciones = calificaciones.Count,
+                DistribucionCalificaciones = distribucionCalificaciones,
+                ActividadMensual = mesesCompletos,
+                ContenidosRecientes = contenidosRecientes,
+                MejoresCalificados = mejoresCalificados,
+                MinutosTotalesEstimados = minutosTotales,
+                HorasTotalesEstimadas = minutosTotales / 60,
+                DiasTotalesEstimados = minutosTotales / 60 / 24
+            };
+
+            return Ok(ApiResponse<EstadisticasDetalladasResponse>.Ok(estadisticas, "Estadísticas detalladas obtenidas"));
+        }
     }
 }

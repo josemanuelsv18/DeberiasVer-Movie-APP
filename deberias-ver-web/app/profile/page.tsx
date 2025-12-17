@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { visualizacionesApi } from '@/lib/api';
 import { VisualizacionResponse } from '@/lib/types';
@@ -110,6 +111,18 @@ export default function ProfilePage() {
             <p className="text-4xl font-bold text-green-400 mb-1">{stats.reviews}</p>
             <p className="text-zinc-400 text-sm">Reseñas</p>
           </div>
+        </div>
+
+        {/* View Full Stats Button */}
+        <div className="mb-8">
+          <Link
+            href="/stats"
+            className="flex items-center justify-center gap-3 w-full py-4 bg-linear-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 rounded-xl hover:from-amber-500/30 hover:to-orange-500/30 transition-all"
+          >
+            <span className="text-2xl">📊</span>
+            <span className="text-white font-semibold">Ver estadísticas detalladas</span>
+            <span className="text-zinc-400">→</span>
+          </Link>
         </div>
 
         {/* Additional Stats */}
