@@ -279,4 +279,5 @@ C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.
 C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.0\MovieApi.pdb
 C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.0\MovieApi.genruntimeconfig.cache
 C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.0\ref\MovieApi.dll
+C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.0\MovieApi.sourcelink.json
 C:\Users\josem\Documents\UTP\DeberiasVer-Movie-APP-main\MovieApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
